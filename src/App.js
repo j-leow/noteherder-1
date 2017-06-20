@@ -42,7 +42,10 @@ class App extends Component {
     }
     const notes = {...this.state.notes}
     notes[note.id] = note
-    this.setState({ notes, currentNote: note })
+    this.setState({ 
+      notes, 
+      currentNote: note 
+    })
   }
 
   removeNote = (note) => {
