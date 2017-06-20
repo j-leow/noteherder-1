@@ -3,7 +3,6 @@ import React, { Component } from 'react'
 import './App.css'
 import Main from './Main'
 import SignIn from './SignIn'
-import SignOut from './SignOut'
 import base, { auth } from './base'
 
 class App extends Component {
@@ -28,8 +27,8 @@ class App extends Component {
   }
 
   syncNotes = () => {
-    base.syncState(
-      `${this.state.uid}/notes`,
+    this.ref = base.syncState(
+      `notes/${this.state.uid}`,
       {
         context: this,
         state: 'notes',
@@ -81,7 +80,13 @@ class App extends Component {
   signOut = () => {
     auth
       .signOut()
-      .then(() => this.setState({ uid: null }))
+      .then(
+        () => {
+          base.removeBinding(this.ref)
+          this.resetCurrentNote()
+          this.setState({ uid: null, notes: {} })
+        }
+      )
   }
 
   setCurrentNote = (note) => {
@@ -98,15 +103,13 @@ class App extends Component {
       removeNote: this.removeNote,
       setCurrentNote: this.setCurrentNote,
       resetCurrentNote: this.resetCurrentNote,
+      signOut: this.signOut,
     }
     return (
-      <div>
-        <SignOut signOut={this.signOut} />
-        <Main
-          {...noteData}
-          {...actions}
-        />
-      </div>
+      <Main
+        {...noteData}
+        {...actions}
+      />
     )
   }
 
