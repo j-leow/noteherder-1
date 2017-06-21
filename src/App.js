@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Route, Switch, Redirect } from 'react-router-dom'
 
 import './App.css'
 import Main from './Main'
@@ -96,7 +97,8 @@ class App extends Component {
     this.setState({ currentNote: note })
   }
 
-  renderMain = () => {
+  render() {
+
     const noteData = {
       notes: this.state.notes,
       currentNote: this.state.currentNote,
@@ -108,18 +110,20 @@ class App extends Component {
       resetCurrentNote: this.resetCurrentNote,
       signOut: this.signOut,
     }
-    return (
-      <Main
-        {...noteData}
-        {...actions}
-      />
-    )
-  }
 
-  render() {
     return (
       <div className="App">
-        { this.signedIn() ? this.renderMain() : <SignIn /> }
+        <Switch>
+            <Route path="/notes" render={() => ( 
+              <Main
+                {...noteData}
+                {...actions}
+              />
+            )} />
+            <Route path="/sign-in" component={SignIn}/>
+            <Route render={() => <Redirect to="/notes"/>} />
+        </Switch>
+        {/*{ this.signedIn() ? this.renderMain() : <SignIn /> }*/}
       </div>
     );
   }
