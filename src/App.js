@@ -43,10 +43,7 @@ class App extends Component {
     }
     const notes = {...this.state.notes}
     notes[note.id] = note
-    this.setState({ 
-      notes, 
-      currentNote: note 
-    })
+    this.setState({ notes, currentNote: note })
   }
 
   removeNote = (note) => {
@@ -98,7 +95,6 @@ class App extends Component {
   }
 
   render() {
-
     const noteData = {
       notes: this.state.notes,
       currentNote: this.state.currentNote,
@@ -114,16 +110,18 @@ class App extends Component {
     return (
       <div className="App">
         <Switch>
-            <Route path="/notes" render={() => ( 
-              <Main
-                {...noteData}
-                {...actions}
-              />
-            )} />
-            <Route path="/sign-in" component={SignIn}/>
-            <Route render={() => <Redirect to="/notes"/>} />
+          <Route path="/notes" render={() => (
+            this.signedIn()
+              ? <Main {...noteData} {...actions} />
+              : <Redirect to="/sign-in" />
+          )} />
+          <Route path="/sign-in" render={() => (
+            !this.signedIn()
+              ? <SignIn />
+              : <Redirect to="/notes" />
+          )} />
+          <Route render={() => <Redirect to="/notes" />} />
         </Switch>
-        {/*{ this.signedIn() ? this.renderMain() : <SignIn /> }*/}
       </div>
     );
   }
